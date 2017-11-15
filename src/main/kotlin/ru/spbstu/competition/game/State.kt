@@ -9,6 +9,7 @@ enum class RiverState{ Our, Enemy, Neutral }
 
 class State {
     lateinit var graph: Graph
+    lateinit var mineEntrances: Set<River>
     val rivers = mutableMapOf<River, RiverState>()
     var mines = listOf<Int>()
     var myId = -1
@@ -22,6 +23,9 @@ class State {
             mines += mine
         }
         graph = setup.map
+        mineEntrances = rivers.keys.filter { river ->
+            river.source in mines || river.target in mines
+        }.toSet()
     }
 
     fun update(claim: Claim) {
