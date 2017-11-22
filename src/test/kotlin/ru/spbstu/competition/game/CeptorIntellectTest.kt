@@ -245,6 +245,14 @@ class CeptorIntellectTest {
     }
 
     @Test
+    fun noBridgesInTriangle() {
+        val setup = Setup(0, 2, readGraphFromJsonFile("triangle.json"), null)
+        val stateCeptor = State()
+        stateCeptor.init(setup)
+        assertEquals(emptyList<River>(), stateCeptor.findBridges { true })
+    }
+
+    @Test
     fun calcMoveTriangle() {
         val setup = Setup(0, 2, readGraphFromJsonFile("triangle.json"), null)
         val stateCeptor = State()
