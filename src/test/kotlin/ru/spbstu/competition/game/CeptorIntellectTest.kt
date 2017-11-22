@@ -54,6 +54,37 @@ class CeptorIntellectTest {
         assertEquals(state.rivers[river3], RiverState.Neutral)
     }
 
+    @Test
+    fun calcMoveEnemyWins() {
+        // 0 (e) 1 (e) 2 (e) 3 (e) 4 5 (e) 6 (e) 7 (e) 8 (e) 9
+        val setup = setupForGraph(listOf(
+                listOf(1),
+                listOf(0, 2),
+                listOf(1, 3),
+                listOf(2, 4),
+                listOf(3, 5),
+                listOf(4, 6),
+                listOf(5, 7),
+                listOf(6, 8),
+                listOf(7, 9),
+                listOf(8)
+        ), listOf(0, 9))
+        val state = State()
+        state.init(setup)
+        state.rivers[River(0, 1)] = RiverState.Enemy
+        state.rivers[River(1, 2)] = RiverState.Enemy
+        state.rivers[River(2, 3)] = RiverState.Enemy
+        state.rivers[River(3, 4)] = RiverState.Enemy
+        state.rivers[River(5, 6)] = RiverState.Enemy
+        state.rivers[River(6, 7)] = RiverState.Enemy
+        state.rivers[River(7, 8)] = RiverState.Enemy
+        state.rivers[River(8, 9)] = RiverState.Enemy
+        val intellect = CeptorIntellect(state)
+        val river = intellect.calcMove()
+        assertEquals(state.rivers[river!!], RiverState.Neutral)
+        assertEquals(River(4, 5), river)
+    }
+
     private fun generateSubwaySetup(): Setup {
         val neighbors = listOf(
                 listOf(1),

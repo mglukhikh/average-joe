@@ -32,7 +32,7 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         candidates += neutralRivers
 
         var bestRiver: River? = null
-        var bestEvaluation = -1
+        var bestEvaluation = Int.MIN_VALUE
         var timeCounter = 0
         println("Choosing among ${candidates.size} candidates")
         for (river in candidates) {
