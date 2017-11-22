@@ -33,7 +33,7 @@ fun main(args: Array<String>) {
     // А уж Цептор-то ну ваще гений...
     val intellect = CeptorIntellect(gameState, protocol)
 
-    protocol.handShake("Ceptor on-line!")
+    protocol.handShake("Ceptor")
     val setupData = protocol.setup()
     gameState.init(setupData)
 
