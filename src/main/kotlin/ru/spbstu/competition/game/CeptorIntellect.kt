@@ -34,6 +34,7 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         var bestRiver: River? = null
         var bestEvaluation = -1
         var timeCounter = 0
+        println("Choosing among ${candidates.size} candidates")
         for (river in candidates) {
             assert(state.rivers[river] == RiverState.Neutral)
             state.rivers[river] = RiverState.Our
@@ -52,6 +53,12 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
                     break
                 }
             }
+        }
+        println("Ceptor chooses $bestRiver with evaluation $bestEvaluation")
+        if (bestRiver != null) {
+            state.rivers[bestRiver] = RiverState.Our
+            println("Current score: ${state.calcScore { it == RiverState.Our }}")
+            state.rivers[bestRiver] = RiverState.Neutral
         }
         return bestRiver
     }

@@ -70,7 +70,7 @@ class CeptorIntellectTest {
                 listOf(10, 12),
                 listOf(11, 13),
                 listOf(12, 14),
-                listOf(13, 15),
+                listOf(13, 15), // ! 14
                 listOf(14, 16),
                 listOf(15, 17),
                 listOf(16, 18),
@@ -120,7 +120,7 @@ class CeptorIntellectTest {
                 listOf(56, 58),
                 listOf(57) // 58
         )
-        val mines = listOf(6, 7, 8, 9, 26, 27, 41)
+        val mines = listOf(6, 7, 8, 9, 14, 26, 27, 41)
         return setupForGraph(neighbors, mines)
     }
 
@@ -137,7 +137,9 @@ class CeptorIntellectTest {
         var current: Intellect = joe
         while (stateCeptor.rivers.values.any { it == RiverState.Neutral }) {
             val river = current.calcMove()!!
-            println("Turn made by ${current.name}: $river")
+            if (current != ceptor) {
+                println("Turn made by ${current.name}: $river")
+            }
             assertEquals(RiverState.Neutral, stateCeptor.rivers[river])
             assertEquals(RiverState.Neutral, stateJoe.rivers[river])
             when (current) {
@@ -153,10 +155,12 @@ class CeptorIntellectTest {
                 }
             }
         }
-        val ceptorScore = stateCeptor.calcScore { it == RiverState.Our }
+        val ceptorScore = stateCeptor.calcScore(log = true) { it == RiverState.Our }
         println("Score for ceptor: $ceptorScore")
+        assertEquals(ceptorScore, stateJoe.calcScore { it == RiverState.Enemy })
         val joeScore = stateJoe.calcScore { it == RiverState.Our }
         println("Score for joe: $joeScore")
+        assertEquals(joeScore, stateCeptor.calcScore { it == RiverState.Enemy })
         assertTrue(ceptorScore > joeScore)
     }
 

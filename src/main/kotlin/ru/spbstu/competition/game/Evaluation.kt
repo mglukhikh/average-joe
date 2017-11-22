@@ -9,15 +9,15 @@ fun State.evaluation(): Int {
     return ourCurrentScore + ourMaximumScore - enemyMaximumScore / 2
 }
 
-fun State.calcScore(includeRivers: (RiverState) -> Boolean): Int {
+fun State.calcScore(log: Boolean = false, includeRivers: (RiverState) -> Boolean): Int {
     var result = 0
     for (mine in mines) {
-        result += calcScoreForMine(mine, includeRivers)
+        result += calcScoreForMine(mine, log, includeRivers)
     }
     return result
 }
 
-private fun State.calcScoreForMine(mine: Int, includeRivers: (RiverState) -> Boolean): Int {
+private fun State.calcScoreForMine(mine: Int, log: Boolean, includeRivers: (RiverState) -> Boolean): Int {
     val visited = mutableSetOf<Int>()
     val queue = ArrayDeque<Int>()
     visited += mine
@@ -31,7 +31,12 @@ private fun State.calcScoreForMine(mine: Int, includeRivers: (RiverState) -> Boo
             if (neighbor in visited) continue
             visited += neighbor
             queue += neighbor
-            result += getScore(State.Path(mine, neighbor))
+            val path = State.Path(mine, neighbor)
+            val score = getScore(path)
+            if (log) {
+                println("Score for $path: $score")
+            }
+            result += score
         }
     }
     return result
