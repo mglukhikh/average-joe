@@ -2,10 +2,10 @@ package ru.spbstu.competition.game
 
 import org.junit.Assert.*
 import org.junit.Test
-import ru.spbstu.competition.protocol.Protocol
 import ru.spbstu.competition.protocol.data.River
 import ru.spbstu.competition.protocol.data.Setup
 import ru.spbstu.competition.protocol.data.Site
+import java.io.File
 import ru.spbstu.competition.protocol.data.Map as Graph
 
 class CeptorIntellectTest {
@@ -195,4 +195,92 @@ class CeptorIntellectTest {
         assertTrue(ceptorScore > joeScore)
     }
 
+    private fun String.readNumberList(): List<Int> {
+        var startDigit = -1
+        var endDigit = -1
+        val result = mutableListOf<Int>()
+        for ((index, char) in this.withIndex()) {
+            if (char.isDigit()) {
+                if (startDigit == -1) {
+                    startDigit = index
+                    endDigit = index
+                }
+                else {
+                    endDigit = index
+                }
+            }
+            else if (startDigit != -1) {
+                result += this.substring(startDigit, endDigit + 1).toInt()
+                startDigit = -1
+                endDigit = -1
+            }
+        }
+        return result
+    }
+
+    private fun readGraphFromJsonFile(name: String): Graph {
+        val line = File(name).readLines().first()
+        val afterLastId = line.substringAfterLast("\"id\":")
+        val lastSiteNumber = afterLastId.takeWhile { it.isDigit() }.toInt()
+        val beforeMines = afterLastId.substringBefore("\"mines\":")
+        val sourceAndTarget = beforeMines.readNumberList()
+        val rivers = mutableListOf<River>()
+        var isSource = true
+        var source = -1
+        var target: Int
+        for (num in sourceAndTarget) {
+            if (isSource) {
+                source = num
+            }
+            else {
+                target = num
+                rivers += River(source, target)
+            }
+            isSource = !isSource
+        }
+
+        val afterMines = afterLastId.substringAfter("\"mines\":")
+        val mines = afterMines.readNumberList()
+        return Graph((0..lastSiteNumber).map { Site(it, null, null) }, rivers, mines)
+    }
+
+    @Test
+    fun calcMoveTriangle() {
+        val setup = Setup(0, 2, readGraphFromJsonFile("triangle.json"), null)
+        val stateCeptor = State()
+        stateCeptor.init(setup)
+        val ceptor = CeptorIntellect(stateCeptor)
+        val stateJoe = State()
+        stateJoe.init(setup)
+        val joe = JoeIntellect(stateJoe)
+
+        var current: Intellect = joe
+        while (stateCeptor.rivers.values.any { it == RiverState.Neutral }) {
+            val river = current.calcMove()!!
+            if (current != ceptor) {
+                println("Turn made by ${current.name}: $river")
+            }
+            assertEquals(RiverState.Neutral, stateCeptor.rivers[river])
+            assertEquals(RiverState.Neutral, stateJoe.rivers[river])
+            when (current) {
+                ceptor -> {
+                    current = joe
+                    stateCeptor.rivers[river] = RiverState.Our
+                    stateJoe.rivers[river] = RiverState.Enemy
+                }
+                joe -> {
+                    stateCeptor.rivers[river] = RiverState.Enemy
+                    stateJoe.rivers[river] = RiverState.Our
+                    current = ceptor
+                }
+            }
+        }
+        val ceptorScore = stateCeptor.calcScore(log = true) { it == RiverState.Our }
+        println("Score for ceptor: $ceptorScore")
+        assertEquals(ceptorScore, stateJoe.calcScore { it == RiverState.Enemy })
+        val joeScore = stateJoe.calcScore { it == RiverState.Our }
+        println("Score for joe: $joeScore")
+        assertEquals(joeScore, stateCeptor.calcScore { it == RiverState.Enemy })
+        assertTrue(ceptorScore > joeScore)
+    }
 }
