@@ -8,13 +8,15 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
 
     override val name = "Ceptor"
 
-    override fun calcMove(): River? {
-        val startTime = Calendar.getInstance().timeInMillis
-
-        val candidates = linkedSetOf<River>()
-        candidates += state.mineEntrances.filter { state.rivers[it] == RiverState.Neutral }
-        candidates += state.findBridges { it != RiverState.Enemy }
+    private fun generateCandidates(): Collection<River> {
+        val freeEntrances = state.mineEntrances.filter { state.rivers[it] == RiverState.Neutral }
+        val freeBridges = state.findBridges { it != RiverState.Enemy }
                 .filter { state.rivers[it] == RiverState.Neutral }
+        println("Total bridges: ${freeBridges.size}")
+        val candidates = linkedSetOf<River>()
+        candidates += freeEntrances
+        candidates += freeBridges
+        if (candidates.isNotEmpty()) return candidates
 
         val ourSites = state
                 .rivers
@@ -29,8 +31,14 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         candidates += neutralRivers.filter { river ->
             river.source in ourSites || river.target in ourSites
         }
-        candidates += neutralRivers
+        if (candidates.isNotEmpty()) return candidates
+        return neutralRivers
+    }
 
+    override fun calcMove(): River? {
+        val startTime = Calendar.getInstance().timeInMillis
+
+        val candidates = generateCandidates()
         var bestRiver: River? = null
         var bestEvaluation = Int.MIN_VALUE
         var timeCounter = 0
