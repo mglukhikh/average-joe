@@ -4,10 +4,11 @@ import ru.spbstu.competition.protocol.data.Map as Graph
 import ru.spbstu.competition.protocol.data.River
 import ru.spbstu.competition.protocol.data.Site
 
-fun Graph.findBridges(): Set<River> =
-        BridgeTraverser(this).findBridges()
+fun State.findBridges(includeRivers: (RiverState) -> Boolean): Set<River> =
+        BridgeTraverser(this, includeRivers).findBridges()
 
-private class BridgeTraverser(val graph: Graph) {
+private class BridgeTraverser(val state: State, val includeRivers: (RiverState) -> Boolean) {
+    val graph = state.graph
     val visitedVertices = mutableSetOf<Int>()
 
     var traverseIndex = 0
@@ -34,7 +35,8 @@ private class BridgeTraverser(val graph: Graph) {
     fun traverse(currentId: Int, previousId: Int?) {
         visitedVertices += currentId
         verticesInfo[currentId] = Info(traverseIndex++)
-        loop@ for (river in graph.rivers) {
+        loop@ for ((river, riverState) in state.rivers) {
+            if (!includeRivers(riverState)) continue@loop
             val nextId = when (currentId) {
                 river.source -> river.target
                 river.target -> river.source
