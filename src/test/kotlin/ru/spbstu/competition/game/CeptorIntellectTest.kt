@@ -40,7 +40,17 @@ class CeptorIntellectTest {
         val state = State()
         state.init(setup)
         val intellect = CeptorIntellect(state)
-        assertEquals(River(1, 3), intellect.calcMove())
+        val river = intellect.calcMove()
+        assertEquals(state.rivers[river!!], RiverState.Neutral)
+        assertEquals(River(1, 3), river)
+        state.rivers[river] = RiverState.Our
+        state.rivers[River(0, 1)] = RiverState.Enemy
+        val river2 = intellect.calcMove()
+        assertEquals(state.rivers[river2!!], RiverState.Neutral)
+        state.rivers[river2] = RiverState.Our
+        state.rivers[River(3, 5)] = RiverState.Enemy
+        val river3 = intellect.calcMove()
+        assertEquals(state.rivers[river3], RiverState.Neutral)
     }
 
 }
