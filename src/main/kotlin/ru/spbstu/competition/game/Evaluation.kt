@@ -4,9 +4,8 @@ import java.util.*
 
 fun State.evaluation(): Int {
     val ourCurrentScore = calcScore { it == RiverState.Our }
-    val ourMaximumScore = calcScore { it != RiverState.Enemy }
     val enemyMaximumScore = calcScore { it != RiverState.Our }
-    return ourCurrentScore + ourMaximumScore - enemyMaximumScore / 2
+    return ourCurrentScore - enemyMaximumScore / 8
 }
 
 fun State.calcScore(log: Boolean = false, includeRivers: (RiverState) -> Boolean): Int {
