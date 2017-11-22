@@ -2,7 +2,7 @@ package ru.spbstu.competition
 
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
-import ru.spbstu.competition.game.Intellect
+import ru.spbstu.competition.game.JoeIntellect
 import ru.spbstu.competition.game.State
 import ru.spbstu.competition.protocol.Protocol
 import ru.spbstu.competition.protocol.data.*
@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
     // Состояние игрового поля
     val gameState = State()
     // Джо очень умный чувак, вот его ум
-    val intellect = Intellect(gameState, protocol)
+    val intellect = JoeIntellect(gameState, protocol)
 
     protocol.handShake("Ceptor on-line!")
     val setupData = protocol.setup()
