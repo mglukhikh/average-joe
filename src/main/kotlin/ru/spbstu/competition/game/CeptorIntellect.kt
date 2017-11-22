@@ -4,9 +4,11 @@ import ru.spbstu.competition.protocol.Protocol
 import ru.spbstu.competition.protocol.data.River
 import java.util.*
 
-class CeptorIntellect(val state: State, val protocol: Protocol? = null) : Intellect {
+class CeptorIntellect(val state: State, override val protocol: Protocol? = null) : Intellect {
 
-    fun calcMove(): River? {
+    override val name = "Ceptor"
+
+    override fun calcMove(): River? {
         val startTime = Calendar.getInstance().timeInMillis
 
         val candidates = linkedSetOf<River>()
@@ -52,10 +54,5 @@ class CeptorIntellect(val state: State, val protocol: Protocol? = null) : Intell
             }
         }
         return bestRiver
-    }
-
-    override fun makeMove() {
-        protocol ?: return
-        return calcMove()?.let { protocol.claimMove(it.source, it.target) } ?: protocol.passMove()
     }
 }

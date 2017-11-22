@@ -9,7 +9,7 @@ fun State.evaluation(): Int {
     return ourCurrentScore + ourMaximumScore - enemyMaximumScore / 2
 }
 
-private fun State.calcScore(includeRivers: (RiverState) -> Boolean): Int {
+fun State.calcScore(includeRivers: (RiverState) -> Boolean): Int {
     var result = 0
     for (mine in mines) {
         result += calcScoreForMine(mine, includeRivers)

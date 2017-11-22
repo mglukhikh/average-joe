@@ -1,10 +1,13 @@
 package ru.spbstu.competition.game
 
 import ru.spbstu.competition.protocol.Protocol
+import ru.spbstu.competition.protocol.data.River
 
-class JoeIntellect(val state: State, val protocol: Protocol) : Intellect {
+class JoeIntellect(val state: State, override val protocol: Protocol? = null) : Intellect {
 
-    override fun makeMove() {
+    override val name = "Joe"
+
+    override fun calcMove(): River? {
         // Joe is like super smart!
         // Da best strategy ever!
 
@@ -12,7 +15,7 @@ class JoeIntellect(val state: State, val protocol: Protocol) : Intellect {
         val try0 = state.rivers.entries.find { (river, riverState) ->
             riverState == RiverState.Neutral && (river.source in state.mines || river.target in state.mines)
         }
-        if(try0 != null) return protocol.claimMove(try0.key.source, try0.key.target)
+        if(try0 != null) return try0.key
 
         // Look at all our pointsees
         val ourSites = state
@@ -26,22 +29,19 @@ class JoeIntellect(val state: State, val protocol: Protocol) : Intellect {
         val try1 = state.rivers.entries.find { (river, riverState) ->
             riverState == RiverState.Neutral && (river.source in ourSites && river.target in ourSites)
         }
-        if(try1 != null) return protocol.claimMove(try1.key.source, try1.key.target)
+        if(try1 != null) return try1.key
 
         // If there is a river near our pointsee, take it!
         val try2 = state.rivers.entries.find { (river, riverState) ->
             riverState == RiverState.Neutral && (river.source in ourSites || river.target in ourSites)
         }
-        if(try2 != null) return protocol.claimMove(try2.key.source, try2.key.target)
+        if(try2 != null) return try2.key
 
         // Bah, take anything left
         val try3 = state.rivers.entries.find { (_, riverState) ->
             riverState == RiverState.Neutral
         }
-        if (try3 != null) return protocol.claimMove(try3.key.source, try3.key.target)
-
-        // (╯°□°)╯ ┻━┻
-        protocol.passMove()
+        if (try3 != null) return try3.key
+        return null
     }
-
 }
