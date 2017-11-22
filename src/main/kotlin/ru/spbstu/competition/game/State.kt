@@ -13,17 +13,19 @@ class State {
     lateinit var mineEntrances: Set<River>
     lateinit var adjacentRivers: Map<Int, List<River>>
 
-    private data class Path(val mine: Int, val site: Int)
+    data class Path(val mine: Int, val site: Int)
     private val scoreCache = mutableMapOf<Path, Int>()
 
     val rivers = mutableMapOf<River, RiverState>()
     var mines = listOf<Int>()
     var myId = -1
 
+    fun getScore(path: Path): Int = scoreCache[path] ?: 0
+
+    fun River.otherSide(site: Int) = if (source == site) target else source
+
     fun neighbors(site: Int): Sequence<Int> =
-            (adjacentRivers[site] ?: emptyList()).asSequence().map {
-                if (it.source == site) it.target else it.source
-            }
+            (adjacentRivers[site] ?: emptyList()).asSequence().map { it.otherSide(site) }
 
     private fun bfs(mine: Int) {
         val visited = mutableMapOf<Int, Int>()
