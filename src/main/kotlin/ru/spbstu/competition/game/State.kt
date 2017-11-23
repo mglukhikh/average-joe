@@ -20,7 +20,7 @@ class State {
     var mines = listOf<Int>()
     var myId = -1
 
-    fun getScore(path: Path): Int = scoreCache[path] ?: 0
+    fun getScore(path: Path): Int = scoreCache[path]!!
 
     fun River.otherSide(site: Int) = if (source == site) target else source
 
@@ -45,7 +45,8 @@ class State {
         }
     }
 
-    private fun initCache() {
+    fun initCache() {
+        if (scoreCache.isNotEmpty()) return
         for (mine in mines) {
             bfs(mine)
         }
@@ -69,7 +70,6 @@ class State {
             adjacentRivers.getOrPut(river.target) { mutableListOf() }.add(river)
         }
         this.adjacentRivers = adjacentRivers
-        initCache()
     }
 
     fun update(claim: Claim) {

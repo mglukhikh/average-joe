@@ -35,6 +35,8 @@ class CeptorBlitzIntellectTest : AbstractCeptorTest() {
                 }
             }
         }
+        stateCeptor.initCache()
+        stateJoe.initCache()
         val ceptorScore = stateCeptor.calcScore(log = true) { it == RiverState.Our }
         println("Score for ceptor: $ceptorScore")
         Assert.assertEquals(ceptorScore, stateJoe.calcScore { it == RiverState.Enemy })

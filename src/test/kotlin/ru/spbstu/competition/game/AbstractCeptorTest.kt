@@ -179,6 +179,8 @@ abstract class AbstractCeptorTest {
                 }
             }
         }
+        stateOur.initCache()
+        stateJoe.initCache()
         val ceptorScore = stateOur.calcScore(log = true) { it == RiverState.Our }
         println("Score for ${ourIntellect.name}: $ceptorScore")
         Assert.assertEquals(ceptorScore, stateJoe.calcScore { it == RiverState.Enemy })

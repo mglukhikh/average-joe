@@ -6,6 +6,10 @@ import java.util.*
 
 class CeptorIntellect(val state: State, override val protocol: Protocol? = null) : Intellect {
 
+    init {
+        state.initCache()
+    }
+
     override val name = "Ceptor"
 
     private fun generateCandidates(): Collection<River> {
