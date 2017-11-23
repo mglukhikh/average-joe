@@ -1,11 +1,23 @@
 package ru.spbstu.competition.game
 
+import ru.spbstu.competition.protocol.data.River
 import java.util.*
 
-fun State.evaluation(): Int {
-    val ourCurrentScore = calcScore { it == RiverState.Our }
-    val enemyMaximumScore = calcScore { it != RiverState.Our }
-    return ourCurrentScore - enemyMaximumScore / 8
+fun State.evaluation(riverToTake: River): Int {
+    assert(rivers[riverToTake] == RiverState.Neutral)
+    // Now we can have ourMaximumScoreWithourRiver, enemy can have enemyMaximumScore
+    // If enemy claim this river, we can have ourMaximumScoreWithoutRiver < ourMaximumScoreWithourRiver
+    // so we lose ourMaximumScoreWithourRiver - ourMaximumScoreWithoutRiver (more is better for us)
+    // If we claim this river, enemy can have enemyMaximumScoreWithoutRiver < enemyMaximumScore,
+    // so he loses enemyMaximumScore - enemyMaximumScoreWithoutRiver (more is better for us)
+    // Total value is below, and first part is constant
+    // (ourMaximumScore + enemyMaximumScore) - (ourMaximumScoreWithoutRiver + enemyMaximumScoreWithoutRiver)
+    rivers[riverToTake] = RiverState.Enemy
+    val ourMaximumScoreWithoutRiver = calcScore { it != RiverState.Enemy }
+    rivers[riverToTake] = RiverState.Our
+    val enemyMaximumScoreWithoutRiver = calcScore { it != RiverState.Our }
+    rivers[riverToTake] = RiverState.Neutral
+    return -(ourMaximumScoreWithoutRiver + enemyMaximumScoreWithoutRiver)
 }
 
 fun State.calcScore(log: Boolean = false, includeRivers: (RiverState) -> Boolean): Int {

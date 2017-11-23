@@ -44,14 +44,11 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         var timeCounter = 0
         println("Choosing among ${candidates.size} candidates")
         for (river in candidates) {
-            assert(state.rivers[river] == RiverState.Neutral)
-            state.rivers[river] = RiverState.Our
-            val evaluation = state.evaluation()
+            val evaluation = state.evaluation(riverToTake = river)
             if (evaluation > bestEvaluation) {
                 bestRiver = river
                 bestEvaluation = evaluation
             }
-            state.rivers[river] = RiverState.Neutral
             timeCounter++
             if (timeCounter >= 5) {
                 timeCounter = 0
