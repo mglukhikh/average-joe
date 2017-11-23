@@ -16,7 +16,6 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         val candidates = linkedSetOf<River>()
         candidates += freeEntrances
         candidates += freeBridges
-        if (candidates.isNotEmpty()) return candidates
 
         val ourSites = state
                 .rivers
@@ -28,6 +27,7 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         candidates += neutralRivers.filter { river ->
             river.source in ourSites && river.target in ourSites
         }
+        if (candidates.isNotEmpty()) return candidates
         candidates += neutralRivers.filter { river ->
             river.source in ourSites || river.target in ourSites
         }
