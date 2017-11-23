@@ -253,9 +253,8 @@ class CeptorIntellectTest {
         assertEquals(emptyList<River>(), stateCeptor.findBridges { true }.toList())
     }
 
-    @Test
-    fun calcMoveTriangle() {
-        val setup = Setup(0, 2, readGraphFromJsonFile("triangle.json"), null)
+    private fun doTestOnGivenJson(fileName: String) {
+        val setup = Setup(0, 2, readGraphFromJsonFile(fileName), null)
         val stateCeptor = State()
         stateCeptor.init(setup)
         val ceptor = CeptorIntellect(stateCeptor)
@@ -291,5 +290,15 @@ class CeptorIntellectTest {
         println("Score for joe: $joeScore")
         assertEquals(joeScore, stateCeptor.calcScore { it == RiverState.Enemy })
         assertTrue(ceptorScore > joeScore)
+    }
+
+    @Test
+    fun calcMoveTriangle() {
+        doTestOnGivenJson("maps/triangle.json")
+    }
+
+    @Test
+    fun calcMoveBoston() {
+        doTestOnGivenJson("maps/boston.json")
     }
 }
