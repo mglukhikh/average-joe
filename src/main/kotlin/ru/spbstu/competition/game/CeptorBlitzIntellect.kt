@@ -12,7 +12,10 @@ class CeptorBlitzIntellect(val state: State, override val protocol: Protocol? = 
         val freeBridges = state.findBridges { it != RiverState.Enemy }
                 .filter { state.rivers[it] == RiverState.Neutral }
         val freeBridgesToEntrances = freeBridges.intersect(freeEntrances)
-        if (freeBridgesToEntrances.isNotEmpty()) return freeBridgesToEntrances.first()
+        if (freeBridgesToEntrances.isNotEmpty()) {
+            println("Blitz takes free bridge to entrance: ${freeBridgesToEntrances.first()}")
+            return freeBridgesToEntrances.first()
+        }
 
         val ourSites = state
                 .rivers
@@ -25,22 +28,48 @@ class CeptorBlitzIntellect(val state: State, override val protocol: Protocol? = 
             river.source in ourSites && river.target in ourSites
         }
         val freeConnectingRiversToEntrances = freeConnectingRivers.intersect(freeEntrances)
-        if (freeConnectingRiversToEntrances.isNotEmpty()) return freeConnectingRiversToEntrances.first()
+        if (freeConnectingRiversToEntrances.isNotEmpty()) {
+            println("Blitz takes free connecting river to entrance: ${freeConnectingRiversToEntrances.first()}")
+            return freeConnectingRiversToEntrances.first()
+        }
         val freeConnectingBridges = freeConnectingRivers.intersect(freeBridges)
-        if (freeConnectingBridges.isNotEmpty()) return freeConnectingBridges.first()
+        if (freeConnectingBridges.isNotEmpty()) {
+            println("Blitz takes free connecting bridge: ${freeConnectingBridges.first()}")
+            return freeConnectingBridges.first()
+        }
 
-        if (freeEntrances.isNotEmpty()) return freeEntrances.first()
+        if (freeEntrances.isNotEmpty()) {
+            println("Blitz takes free entrance: ${freeEntrances.first()}")
+            return freeEntrances.first()
+        }
 
         val freeAdjacentRivers = freeRivers.filter { river ->
             river.source in ourSites || river.target in ourSites
         }
         val freeAdjacentBridges = freeAdjacentRivers.intersect(freeBridges)
-        if (freeAdjacentBridges.isNotEmpty()) return freeAdjacentBridges.first()
+        if (freeAdjacentBridges.isNotEmpty()) {
+            println("Blitz takes free adjacent bridge: ${freeAdjacentBridges.first()}")
+            return freeAdjacentBridges.first()
+        }
 
-        if (freeBridges.isNotEmpty()) return freeBridges.first()
-        if (freeConnectingRivers.isNotEmpty()) return freeConnectingRivers.first()
-        if (freeAdjacentRivers.isNotEmpty()) return freeAdjacentRivers.first()
+        if (freeBridges.isNotEmpty()) {
+            println("Blitz takes free bridge: ${freeBridges.first()}")
+            return freeBridges.first()
+        }
+        if (freeConnectingRivers.isNotEmpty()) {
+            println("Blitz takes free connecting river: ${freeConnectingRivers.first()}")
+            return freeConnectingRivers.first()
+        }
+        if (freeAdjacentRivers.isNotEmpty()) {
+            println("Blitz takes free adjacent river: ${freeAdjacentRivers.first()}")
+            return freeAdjacentRivers.first()
+        }
 
-        return freeRivers.firstOrNull()
+        if (freeRivers.isNotEmpty()) {
+            println("Blitz takes just free river: ${freeRivers.first()}")
+        }
+
+        println("Nothing to take for Blitz")
+        return null
     }
 }
