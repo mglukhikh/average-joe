@@ -234,7 +234,6 @@ class CeptorIntellectTest {
             }
             else {
                 target = num
-                println("River from $source to $target found")
                 rivers += River(source, target)
             }
             isSource = !isSource
