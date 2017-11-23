@@ -149,7 +149,11 @@ abstract class AbstractCeptorTest {
         return Graph((0..lastSiteNumber).map { Site(it, null, null) }, rivers, mines)
     }
 
-    protected fun doTestOnGivenJson(fileName: String, intellectClass: KClass<out Intellect>) {
+    protected fun doTestOnGivenJson(
+            fileName: String,
+            intellectClass: KClass<out Intellect>,
+            weAreFirst: Boolean = false
+    ) {
         val setup = Setup(0, 2, readGraphFromJsonFile(fileName), null)
         val stateOur = State()
         stateOur.init(setup)
@@ -158,7 +162,7 @@ abstract class AbstractCeptorTest {
         stateJoe.init(setup)
         val joe = JoeIntellect(stateJoe)
 
-        var current: Intellect = joe
+        var current: Intellect = if (weAreFirst) ourIntellect else joe
         while (stateOur.rivers.values.any { it == RiverState.Neutral }) {
             val river = current.calcMove()!!
             if (current != ourIntellect) {

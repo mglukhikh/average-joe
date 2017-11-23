@@ -14,7 +14,7 @@ class CeptorBlitzIntellectTest : AbstractCeptorTest() {
         stateJoe.init(setup)
         val joe = JoeIntellect(stateJoe)
 
-        var current: Intellect = joe
+        var current: Intellect = ceptor
         while (stateCeptor.rivers.values.any { it == RiverState.Neutral }) {
             val river = current.calcMove()!!
             if (current != ceptor) {
@@ -48,12 +48,12 @@ class CeptorBlitzIntellectTest : AbstractCeptorTest() {
 
     @Test
     fun calcMoveTriangle() {
-        doTestOnGivenJson("maps/triangle.json", CeptorBlitzIntellect::class)
+        doTestOnGivenJson("maps/triangle.json", CeptorBlitzIntellect::class, weAreFirst = true)
     }
 
     @Test
     fun calcMoveBoston() {
-        doTestOnGivenJson("maps/boston.json", CeptorBlitzIntellect::class)
+        doTestOnGivenJson("maps/boston.json", CeptorBlitzIntellect::class, weAreFirst = true)
     }
 
 }
