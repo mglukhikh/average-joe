@@ -13,7 +13,7 @@ private class BridgeTraverser(val state: State, val includeRivers: (RiverState) 
 
     var traverseIndex = 0
 
-    class Info(var inIndex: Int, var bridgeIndex: Int) {
+    class Info(var inIndex: Int, var loopIndex: Int) {
         constructor(index: Int): this(index, index)
     }
 
@@ -46,13 +46,13 @@ private class BridgeTraverser(val state: State, val includeRivers: (RiverState) 
             val currentInfo = verticesInfo[currentId]!!
             if (nextId in visitedVertices) {
                 val nextInfo = verticesInfo[nextId]!!
-                currentInfo.bridgeIndex = minOf(currentInfo.bridgeIndex, nextInfo.inIndex)
+                currentInfo.loopIndex = minOf(currentInfo.loopIndex, nextInfo.inIndex)
             }
             else {
                 traverse(nextId, currentId)
                 val nextInfo = verticesInfo[nextId]!!
-                currentInfo.bridgeIndex = minOf(currentInfo.bridgeIndex, nextInfo.bridgeIndex)
-                if (nextInfo.bridgeIndex > currentInfo.inIndex) {
+                currentInfo.loopIndex = minOf(currentInfo.loopIndex, nextInfo.loopIndex)
+                if (nextInfo.loopIndex > currentInfo.inIndex) {
                     bridges += river
                 }
             }
