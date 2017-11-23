@@ -2,6 +2,7 @@ package ru.spbstu.competition
 
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
+import ru.spbstu.competition.game.CeptorBlitzIntellect
 import ru.spbstu.competition.game.CeptorIntellect
 import ru.spbstu.competition.game.JoeIntellect
 import ru.spbstu.competition.game.State
@@ -31,9 +32,10 @@ fun main(args: Array<String>) {
     // Джо очень умный чувак, вот его ум
     //val intellect = JoeIntellect(gameState, protocol)
     // А уж Цептор-то ну ваще гений...
-    val intellect = CeptorIntellect(gameState, protocol)
+    val intellect = CeptorBlitzIntellect(gameState, protocol)
 
-    protocol.handShake("Ceptor")
+    val myName = intellect.name
+    protocol.handShake(myName)
     val setupData = protocol.setup()
     gameState.init(setupData)
 
@@ -47,11 +49,11 @@ fun main(args: Array<String>) {
             is GameResult -> {
                 println("The game is over!")
                 val myScore = message.stop.scores[protocol.myId]
-                println("Ceptor scored ${myScore.score} points!")
+                println("$myName scored ${myScore.score} points!")
                 break@gameloop
             }
             is Timeout -> {
-                println("Ceptor too slow =(")
+                println("$myName too slow =(")
             }
             is GameTurnMessage -> {
                 for(move in message.move.moves) {
@@ -63,7 +65,7 @@ fun main(args: Array<String>) {
             }
         }
 
-        println("Ceptor thinkin'")
+        println("$myName thinkin'")
         intellect.makeMove()
         println("Got it!")
     }
