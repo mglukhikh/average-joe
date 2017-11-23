@@ -41,25 +41,24 @@ class CeptorIntellect(val state: State, override val protocol: Protocol? = null)
         val candidates = generateCandidates()
         var bestRiver: River? = null
         var bestEvaluation = Int.MIN_VALUE
-        var timeCounter = 0
         println("Choosing among ${candidates.size} candidates")
-        for (river in candidates) {
+        for ((candidateIndex, river) in candidates.withIndex()) {
             val evaluation = state.evaluation(riverToTake = river)
             if (evaluation > bestEvaluation) {
                 bestRiver = river
                 bestEvaluation = evaluation
             }
-            timeCounter++
-            if (timeCounter >= 5) {
-                timeCounter = 0
-                val currentTime = Calendar.getInstance().timeInMillis
-                if (currentTime - startTime > 2000) {
-                    // Stop calculation if we wasted more than 2 seconds
-                    break
-                }
+            val currentTime = Calendar.getInstance().timeInMillis
+            val timePassed = currentTime - startTime
+            if (timePassed > 2000 || timePassed > 1300 && candidateIndex == 0) {
+                // Stop calculation if we wasted more than 2 seconds
+                println("Break by time after considering ${candidateIndex + 1} candidates")
+                break
             }
         }
         println("Ceptor chooses $bestRiver with evaluation $bestEvaluation")
+        val endTime = Calendar.getInstance().timeInMillis
+        println("Time to choose: ${endTime - startTime}")
         if (bestRiver != null) {
             state.rivers[bestRiver] = RiverState.Our
             println("Current score: ${state.calcScore { it == RiverState.Our }}")
