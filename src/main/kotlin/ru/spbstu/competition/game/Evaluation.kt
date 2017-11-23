@@ -5,9 +5,9 @@ import java.util.*
 
 fun State.evaluation(riverToTake: River): Int {
     assert(rivers[riverToTake] == RiverState.Neutral)
-    // Now we can have ourMaximumScoreWithourRiver, enemy can have enemyMaximumScore
+    // Now we can have ourMaximumScoreWithoutRiver, enemy can have enemyMaximumScore
     // If enemy claim this river, we can have ourMaximumScoreWithoutRiver < ourMaximumScoreWithourRiver
-    // so we lose ourMaximumScoreWithourRiver - ourMaximumScoreWithoutRiver (more is better for us)
+    // so we lose ourMaximumScoreWithoutRiver - ourMaximumScoreWithoutRiver (more is better for us)
     // If we claim this river, enemy can have enemyMaximumScoreWithoutRiver < enemyMaximumScore,
     // so he loses enemyMaximumScore - enemyMaximumScoreWithoutRiver (more is better for us)
     // Total value is below, and first part is constant
