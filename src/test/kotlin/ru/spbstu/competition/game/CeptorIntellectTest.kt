@@ -222,7 +222,7 @@ class CeptorIntellectTest {
         val line = File(name).readLines().first()
         val afterLastId = line.substringAfterLast("\"id\":")
         val lastSiteNumber = afterLastId.takeWhile { it.isDigit() }.toInt()
-        val beforeMines = afterLastId.substringBefore("\"mines\":")
+        val beforeMines = afterLastId.substringAfter("\"rivers\":").substringBefore("\"mines\":")
         val sourceAndTarget = beforeMines.readNumberList()
         val rivers = mutableListOf<River>()
         var isSource = true
@@ -234,6 +234,7 @@ class CeptorIntellectTest {
             }
             else {
                 target = num
+                println("River from $source to $target found")
                 rivers += River(source, target)
             }
             isSource = !isSource
@@ -249,7 +250,7 @@ class CeptorIntellectTest {
         val setup = Setup(0, 2, readGraphFromJsonFile("triangle.json"), null)
         val stateCeptor = State()
         stateCeptor.init(setup)
-        assertEquals(emptyList<River>(), stateCeptor.findBridges { true })
+        assertEquals(emptyList<River>(), stateCeptor.findBridges { true }.toList())
     }
 
     @Test
