@@ -20,6 +20,10 @@ object Arguments {
             CmdLineParser(this).parseArgument(*args).let{ this }
 }
 
+private fun Setup.tooComplex(): Boolean {
+    return map.rivers.size + map.sites.size > 500
+}
+
 fun main(args: Array<String>) {
     Arguments.use(args)
 
@@ -31,12 +35,16 @@ fun main(args: Array<String>) {
     val gameState = State()
     // Джо очень умный чувак, вот его ум
     //val intellect = JoeIntellect(gameState, protocol)
-    // А уж Цептор-то ну ваще гений...
-    val intellect = CeptorBlitzIntellect(gameState, protocol)
 
-    val myName = intellect.name
+    val myName = "Ceptor"
     protocol.handShake(myName)
     val setupData = protocol.setup()
+    // А уж Цептор-то ну ваще гений...
+    val intellect = when {
+        setupData.tooComplex() -> CeptorBlitzIntellect(gameState, protocol)
+        else -> CeptorIntellect(gameState, protocol)
+    }
+    println("Chosen intellect: ${intellect.name}")
     gameState.init(setupData)
 
     println("Received id = ${setupData.punter}")
